@@ -6,7 +6,7 @@ Este é um repositório sob licença Apache 2.0 que reúne assets importantes pa
 
 # Base da iniciativa
 
-Na pasta V00 temos um sub-módulo que é um fork da iniciativa OpenBanking Brasil. 
+Fizemos um fork dos documentos do repositório do grupo: [https://github.com/open-banking-brasil](https://github.com/open-banking-brasil). Os contratos Swaggers/OAS ainda não foram definidos, por isso vamos deixar algumas referências que podem ser usadas por qualquer instituição até que estes padrões estejam definidos.
 
 ## Sobre a Skalena
 
