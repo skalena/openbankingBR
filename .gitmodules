@@ -1,0 +1,3 @@
+[submodule "v00/docs"]
+	path = v00/docs
+	url = https://github.com/open-banking-brasil/docs.git
