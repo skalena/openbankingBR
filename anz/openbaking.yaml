@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: Product Services v2
+  version: '1.0'
+  description: 'Get product details including fees, interest rates, features and descriptions  '
+  contact:
+    name: Nam Cao
+    email: nam_cao_221@hotmail.com
+servers:
+  - url: 'https://productservice-preprod.csp.gcpnp.anz'
+    description: prod
+paths:
+  '/products/{categoryType}':
+    parameters:
+      - schema:
+          type: string
+        in: header
+        name: Client-IP
+        description: '**Client-IP**. IP address of the device making the request.'
+        required: true
+      - schema:
+          type: string
+        in: header
+        name: RequestID
+        description: '**RequestID**. An id that identifies this request. Note - the `RequestID` will be inserted by Security Gateway if not supplied. As such it is optional to the api consumer, even though the service requires it.'
+        required: true
+      - schema:
+          type: string
+        in: header
+        name: CRNUserID
+        description: '**CRNUserID**. The CRN of the customer (this value is injected by BA PEP/Gateway).'
+        required: true
+      - schema:
+          type: string
+        in: header
+        name: Authorization
+        description: '**Authorization**. The value for the ANZ JWT (issued by BA and injected by SGW).'
+        required: true
+      - schema:
+          type: string
+        name: categoryType
+        in: path
+        description: '**categoryType**. Type of category to search for (encoded).'
+        example: c2F2aW5nc2FjY291bnRz
+        required: true
+    get:
+      summary: '/products/{categoryType}'
+      tags:
+        - Product Endpoints
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productName:
+                          type: string
+                        productCode:
+                          type: string
+                        productSubCode:
+                          type: string
+                        eligibility:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              eligibilityType:
+                                type: string
+                              additionalInfo:
+                                type: string
+                              additionalValue:
+                                type: string
+                        depositRates:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              rate:
+                                type: string
+                              depositRateType:
+                                type: string
+                              rateConcatenate:
+                                type: string
+                            required:
+                              - rate
+                              - depositRateType
+                              - rateConcatenate
+                        fees:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              amount:
+                                type: string
+                              name:
+                                type: string
+                              feeType:
+                                type: string
+                              feeConcatenate:
+                                type: string
+                            required:
+                              - amount
+                              - name
+                              - feeType
+                              - feeConcatenate
+                        declaration:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              declarationID:
+                                type: integer
+                              declarationItem:
+                                type: string
+                              enabled:
+                                type: boolean
+                            required:
+                              - declarationID
+                              - declarationItem
+                              - enabled
+                        balanceTiers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              tiers:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    minimumValue:
+                                      type: integer
+                                    unitOfMeasure:
+                                      type: string
+                                    applicabilityConditions:
+                                      type: object
+                                      properties:
+                                        additionalInfo:
+                                          type: string
+                                    maximumValue:
+                                      type: integer
+                                    rate:
+                                      type: string
+                                    depositRateType:
+                                      type: string
+
+                      required:
+                        - productName
+                        - productCode
+                        - productSubCode
+                        - depositRates
+                        - fees
+                        - declaration
+                        - balanceTiers
+                        - eligibility
+                required:
+                  - products
+              examples:
+                Example Response:
+                  value:
+                    products:
+                      - productName: ANZ Progress Saver
+                        productCode: DDA
+                        productSubCode: SA
+                        eligibility:
+                          - eligibilityType: MIN_AGE
+                            additionalInfo: You must be 12 years of age or older to apply
+                            additionalValue: '12'
+                        depositRates:
+                          - rate: '0.0001'
+                            depositRateType: VARIABLE
+                          - rate: '0.0099'
+                            depositRateType: BONUS
+                          - rate: '0.0100'
+                            depositRateType: TOTAL
+                            rateConcatentate: '1.00% p.a. 0.01% p.a. base rate + 0.99% p.a. bonus interest rate.'
+                        fees:
+                          - amount: '2.50'
+                            name: Staff Assisted Transaction
+                            feeType: TRANSACTION
+                            feeConcatenate: '$2.50 per Staff Assisted Transaction (e.g. in branch, on the phone)'
+                          - amount: '1.00'
+                            name: Electronic Transaction
+                            feeType: TRANSACTION
+                            feeConcatenate: '$1.00 per Electronic Transaction (e.g. eftpos, ATM)'
+                        declaration:
+                          - declarationID: 1
+                            declarationItem: 'Please read and accept each of these documents before continuing https://www.anz.com.au/content/dam/anzcomau/documents/pdf/saving-transaction-products-tcs.pdf https://www.anz.com.au/content/dam/anzcomau/documents/pdf/personal-account-fees-charges.pdf https://www.anz.com.au/content/dam/anzcomau/documents/pdf/privacy-policy.pdf.  Documents also available on anz.com. To retain a copy please save, print or email them to yourself.'
+                            enabled: true
+                          - declarationID: 2
+                            declarationItem: 'Please agree to only receive digital copies of documents, statements and notices. You’ll need to regularly check your email and keep your details up to date because we may send this information to you via email, or use email to notify you when it’s available in the ANZ App or Internet Banking. You can withdraw your consent to receive online statements and notices at any time in the ANZ App or Internet Banking. You can also call to request paper copies of documents, statements and notices.'
+                            enabled: true
+                          - declarationID: 3
+                            declarationItem: 'As the account holder, you confirm you have provided correct and complete information. If your information changes, you agree to notify us within 30 days of the change occurring and provide updated documents and information. You understand providing false information may constitute an offence and penalties may apply.'
+                            enabled: true
+                      - productName: ANZ Online Saver
+                        productCode: DDA
+                        productSubCode: ED
+                        eligibility:
+                          - eligibilityType: MIN_AGE
+                            additionalInfo: You must be 12 years of age or older to apply
+                            additionalValue: '12'
+                        depositRates:
+                          - rate: '0.0005'
+                            depositRateType: VARIABLE
+                          - rate: '0.009'
+                            depositRateType: INTRODUCTORY
+                          - rate: '0.0095'
+                            depositRateType: TOTAL
+                            rateConcatentate: '0.95% p.a. 0.05% p.a. current standard variable rate + 0.90% p.a. introductory interest.'
+                      - productName: ANZ Premium Cash Management Account
+                        productCode: DDA
+                        productSubCode: EB
+                        eligibility:
+                          - eligibilityType: MIN_AGE
+                            additionalInfo: You must be 12 years of age or older to apply
+                            additionalValue: '12'
+                        balanceTiers:
+                          - tiers:
+                              - minimumValue: 1
+                                unitOfMeasure: DOLLAR
+                                applicabilityConditions:
+                                  additionalInfo: 'Balance between $1 and $9,999'
+                                maximumValue: 9999
+                                rate: '0.00'
+                                depositRateType: VARIABLE
+                          - tiers:
+                              - minimumValue: 10000
+                                unitOfMeasure: DOLLAR
+                                applicabilityConditions:
+                                  additionalInfo: 'Balance between $10,000 and $24,999'
+                                maximumValue: 24999
+                                rate: '0.001'
+                                depositRateType: VARIABLE
+                          - tiers:
+                              - minimumValue: 25000
+                                unitOfMeasure: DOLLAR
+                                applicabilityConditions:
+                                  additionalInfo: 'Balance between $25,000 and $49,999'
+                                maximumValue: 49999
+                                rate: '0.001'
+                                depositRateType: VARIABLE
+                          - tiers:
+                              - minimumValue: 50000
+                                unitOfMeasure: DOLLAR
+                                applicabilityConditions:
+                                  additionalInfo: 'Balance between $50,000 and $99,999'
+                                maximumValue: 99999
+                                rate: '0.001'
+                                depositRateType: VARIABLE
+                          - tiers:
+                              - minimumValue: 100000
+                                unitOfMeasure: DOLLAR
+                                applicabilityConditions:
+                                  additionalInfo: 'Balance between $100,000 and $249,999'
+                                maximumValue: 249999
+                                rate: '0.001'
+                                depositRateType: VARIABLE
+                          - tiers:
+                              - minimumValue: 250000
+                                unitOfMeasure: DOLLAR
+                                applicabilityConditions:
+                                  additionalInfo: 'Balance between $250,000 and $499,999'
+                                maximumValue: 499999
+                                rate: '0.001'
+                                depositRateType: VARIABLE
+                          - tiers:
+                              - minimumValue: 500000
+                                unitOfMeasure: DOLLAR
+                                applicabilityConditions:
+                                  additionalInfo: 'Balance between $500,000 and $4,999,999'
+                                maximumValue: 4999999
+                                rate: '0.0025'
+                                depositRateType: VARIABLE
+                          - tiers:
+                              - minimumValue: 5000000
+                                unitOfMeasure: DOLLAR
+                                applicabilityConditions:
+                                  additionalInfo: 'Balance $5,000,000 or more'
+                                rate: '0.0025'
+                                depositRateType: VARIABLE
+                        depositRates:
+                          - rate: '0.0025'
+                            depositRateType: MAXIMUM
+                            rateConcatentate: 'You could earn tiered interest up to: 0.25%'
+                        fees:
+                          - amount: '2.50'
+                            name: Staff Assisted Transaction
+                            feeType: TRANSACTION
+                          - amount: '0.50'
+                            name: Electronic Transaction
+                            feeType: TRANSACTION
+                          - amount: '0.50'
+                            name: Cheque Transaction
+                            feeType: TRANSACTION
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+              examples: {}
+      operationId: get-products-productId
+      description: 'Obtain products details such as fees, interest rates and product features based on input `categoryType`.'
+components:
+  schemas: {}
+  securitySchemes:
+    API Key - 1:
+      name: API Key
+      type: apiKey
+      in: query
