@@ -1,0 +1,1097 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "BB Financial Reports API allows you to query statements of: checking accounts, savings accounts, investment accounts and credit card.",
+    "version" : "0.0.1",
+    "title" : "Financial Reports API v1",
+    "contact" : { }
+  },
+  "host" : "api.desenv.bb.com.br",
+  "basePath" : "/consultas-financeiras/v1",
+  "schemes" : [ "https" ],
+  "security" : [ {
+    "oauth2" : [ "consultas-financeiras.extratos" ]
+  } ],
+  "paths" : {
+    "/extratos/conta-corrente" : {
+      "get" : {
+        "tags" : [ "Checking Account" ],
+        "summary" : "Checking Account Statement",
+        "description" : "Returns a checking account statement with the account balance and the transactions (include details)",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "gw-app-key",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "description" : "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+          "x-example" : "40efa840a8a801364253005056b91a5b"
+        }, {
+          "name" : "data_inicio",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "description" : "Optional. The start date of report in format ddMMyyyy."
+        }, {
+          "name" : "data_fim",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "description" : "Optional. The end date of report in format ddMMyyyy."
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has been fulfilled and resulted in response.",
+            "schema" : {
+              "$ref" : "#/definitions/checkingAccountResponse"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "REQUEST FAILED. The parameters were valid but the request failed.."
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE. The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        },
+        "security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    },
+    "/extratos/conta-poupanca" : {
+      "get" : {
+        "tags" : [ "Savings Account" ],
+        "summary" : "Savings Account Statement",
+        "description" : "Returns the savings accounts report with the accounts name and balances.",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "gw-app-key",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "description" : "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+          "x-example" : "40efa840a8a801364253005056b91a5b"
+        }, {
+          "name" : "mes",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "description" : "Optional. Month in format MM."
+        }, {
+          "name" : "ano",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "description" : "Optional. Year in format YYYY."
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has been fulfilled and resulted in response.",
+            "schema" : {
+              "$ref" : "#/definitions/savingAccountsResponse"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "REQUEST FAILED. The parameters were valid but the request failed.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE. The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        },
+        "security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    },
+    "/extratos/cartao-credito/faturas" : {
+      "get" : {
+        "tags" : [ "Credit Card" ],
+        "summary" : "Credit Card Bill",
+        "description" : "Returns all credit cards bills report.",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "gw-app-key",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "description" : "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+          "x-example" : "40efa840a8a801364253005056b91a5b"
+        }, {
+          "name" : "mes_inicio",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "description" : "The start month of report in format MM."
+        }, {
+          "name" : "ano_inicio",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "description" : "The start year of report in format YYYY."
+        }, {
+          "name" : "mes_fim",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "description" : "The end month of report in format MM."
+        }, {
+          "name" : "ano_fim",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "description" : "The end year of report in format YYYY."
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has been fulfilled and resulted in response.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/creditCardBill"
+              }
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "REQUEST FAILED. The parameters were valid but the request failed..",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND. The server has not found anything matching the Request-URI.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "502" : {
+            "description" : "BAD GATEWAY. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE. The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        },
+        "security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    },
+    "/extratos/cartao-credito/faturas/{numeroContaCartao}_{numeroSequencialFaturaContaCartao}" : {
+      "get" : {
+        "tags" : [ "Credit Card" ],
+        "summary" : "Credit Card Statement",
+        "description" : "Returns credit card report of a specific bill.",
+        "parameters" : [ {
+          "name" : "gw-app-key",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "description" : "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+          "x-example" : "40efa840a8a801364253005056b91a5b"
+        },
+        {
+          "name" : "numeroContaCartao",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "description" : "Credit Card Account Number."
+        },
+        {
+          "name" : "numeroSequencialFaturaContaCartao",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "description" : "Credit Card Sequential Number."
+        }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has been fulfilled and resulted in response.",
+            "schema" : {
+              "$ref" : "#/definitions/creditCardBillDetails"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "REQUEST FAILED. The parameters were valid but the request failed..",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND. The server has not found anything matching the Request-URI.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "502" : {
+            "description" : "BAD GATEWAY. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE. The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        },
+        "security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    },
+    "/extratos/fundos-investimento" : {
+      "get" : {
+        "tags" : [ "Investment" ],
+        "summary" : "Investment Funds Statement",
+        "description" : "Provide a statement object that request an investment fund name, gross balance, net balance, and share balance.",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "gw-app-key",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "description" : "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+          "x-example" : "40efa840a8a801364253005056b91a5b"
+        }, {
+          "name" : "mes",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "format" : "double",
+          "description" : "Month in format (MM)",
+          "x-example" : 12.0
+        }, {
+          "name" : "ano",
+          "in" : "query",
+          "required" : false,
+          "type" : "number",
+          "format" : "double",
+          "description" : "Year in format (YYYY)",
+          "x-example" : 2016.0
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The request has succeeded.\nThe information returned with the response is dependent on the method used in the request.",
+            "schema" : {
+              "$ref" : "#/definitions/investmentFundResponse"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "UNAUTHORIZED. The request requires user authentication. Repeat the request with a Authorization header field."
+          },
+          "404" : {
+            "description" : "NOT FOUND. The server has not found anything matching the Request-URI.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "409" : {
+            "description" : "CONFLICT. The request could not be completed due to a conflict with the current state of the target resource. UID duplicated.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422" : {
+            "description" : "REQUEST FAILED. The parameters were valid but the request failed.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE. The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "504" : {
+            "description" : "GATEWAY TIMEOUT. The server did not receive a timely response from the upstream server needed to access in attempting to complete the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        },
+        "security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    },
+    "/extratos/investimento-cdb" : {
+      "get" : {
+        "tags" : [ "Investment" ],
+        "summary" : "Investment CDB Statement",
+        "description" : "Provide a statement object that request an CDB investment .",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "gw-app-key",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "description" : "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+          "x-example" : "40efa840a8a801364253005056b91a5b"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns investment fund name and balances.",
+            "schema" : {
+              "$ref" : "#/definitions/investmentCDBResponse"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "UNAUTHORIZED\tThe request requires user authentication.\nRepeat the request with a X-br-com-bb-authorization header field.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "FORBIDDEN\tThe server understood the request, but is refusing to fulfill it."
+          },
+          "404" : {
+            "description" : "NOT FOUND\tThe server has not found anything matching the Request-URI.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR\tThe server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE\tThe server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "504" : {
+            "description" : "GATEWAY TIMEOUT\tThe server did not receive a timely response from the upstream server needed to access in attempting to complete the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        },
+        "security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    },
+    "/extratos/previdencia-privada" : {
+      "get" : {
+        "tags" : [ "Investment" ],
+        "summary" : "Private Pension Statement",
+        "description" : "Provide a statement object that request an private pension.",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "gw-app-key",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "description" : "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+          "x-example" : "40efa840a8a801364253005056b91a5b"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returns investment fund name and balances.",
+            "schema" : {
+              "$ref" : "#/definitions/privatePensionResponse"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "UNAUTHORIZED\tThe request requires user authentication.\nRepeat the request with a X-br-com-bb-authorization header field.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "403" : {
+            "description" : "FORBIDDEN\tThe server understood the request, but is refusing to fulfill it."
+          },
+          "404" : {
+            "description" : "NOT FOUND\tThe server has not found anything matching the Request-URI.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR\tThe server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE\tThe server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "504" : {
+            "description" : "GATEWAY TIMEOUT\tThe server did not receive a timely response from the upstream server needed to access in attempting to complete the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        },
+        "security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "oauth2" : {
+      "type" : "oauth2",
+      "authorizationUrl" : "oauth.html",
+      "flow" : "implicit",
+      "scopes" : {
+        "consultas-financeiras.extratos" : "Provide access to get account balances."
+      }
+    }
+  },
+  "definitions" : {
+    "checkingAccountResponse" : {
+      "type" : "object",
+      "properties" : {
+        "checkingAccountData" : {
+          "$ref" : "#/definitions/checkingAccountData"
+        }
+      },
+      "description" : "Checking Account Object Response"
+    },
+    "checkingAccountData" : {
+      "type" : "object",
+      "properties" : {
+        "balance" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Sum of the end of day balances.",
+          "default" : 1660.33
+        },
+        "transactions" : {
+          "type" : "array",
+          "description" : "Description of a checking account transaction.",
+          "items" : {
+            "$ref" : "#/definitions/checkingAccountsTransactions"
+          }
+        }
+      },
+      "description" : "Checking Account Object Data"
+    },
+    "checkingAccountsTransactions" : {
+      "type" : "object",
+      "properties" : {
+        "description" : {
+          "type" : "string",
+          "description" : "Description of transaction entry",
+          "default" : "Compra com Cartão"
+        },
+        "addlInf" : {
+          "type" : "string",
+          "description" : "Additional Information of transaction",
+          "default" : "01/10 17:04 TEATRO DO BANCARIOS"
+        },
+        "value" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Amount of transaction entry.",
+          "default" : -50.0
+        },
+        "date" : {
+          "type" : "string",
+          "description" : "Date when the transaction was authorized.",
+          "default" : "03/10/2016"
+        }
+      },
+      "description" : "Transactions of a checking account"
+    },
+    "savingAccountsResponse" : {
+      "type" : "object",
+      "properties" : {
+        "savingAccountsData" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/savingAccountsData"
+          }
+        }
+      },
+      "description" : "Savings Accounts Response "
+    },
+    "savingAccountsData" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Name of the saving account.",
+          "default" : "Poupanca Ouro-1"
+        },
+        "balance" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Balance of the saving account.",
+          "default" : 298.26
+        },
+        "transactions" : {
+          "type" : "array",
+          "description" : "Description of a checking account transaction.",
+          "items" : {
+            "$ref" : "#/definitions/savingAccountsTransactions"
+          }
+        }
+      },
+      "description" : "Savings Accounts Response Data"
+    },
+    "savingAccountsTransactions" : {
+      "type" : "object",
+      "properties" : {
+        "description" : {
+          "type" : "string",
+          "description" : "Description of the transaction",
+          "default" : "Anotacao De Credito"
+        },
+        "value" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Value of the transaction",
+          "default" : 7400.26
+        },
+        "date" : {
+          "type" : "string",
+          "description" : "Date of the transaction",
+          "default" : "22/08/2017"
+        }
+      },
+      "description" : "Savings Accounts Data"
+    },
+    "creditCardBill" : {
+      "type" : "object",
+      "properties" : {
+        "codigoEstadoFatura" : {
+          "type" : "string",
+          "description" : "Estado da fatura",
+          "default" : "ABERTA"
+        },
+        "dataVencimentoFatura" : {
+          "type" : "string",
+          "description" : "Data de vencimento da fatura (dd/MM/yyyy)",
+          "default" : "20/12/2016"
+        },
+        "nomeModalidade" : {
+          "type" : "string",
+          "description" : "Nome da modalidade",
+          "default" : "OUROCARD MASTERCARD"
+        },
+        "valorSaldoFaturaContaCartao" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da fatura",
+          "default" : 357.22
+        },
+        "quantidadePontoFatura" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Quantidade de pontos da fatura",
+          "default" : 0
+        },
+        "numeroContaCartao" : {
+          "type" : "string",
+          "description" : "Número da conta cartão",
+          "default" : "54973152"
+        },
+        "numeroSequencialFaturaContaCartao" : {
+          "type" : "string",
+          "description" : "Número sequencial da conta cartão",
+          "default" : "15142689"
+        }
+      }
+    },
+    "creditCardBillDetails" : {
+      "type" : "object",
+      "properties" : {
+        "dataVencimentoFatura" : {
+          "type" : "string",
+          "description" : "Data de vencimento da fatura (dd/MM/yyyy)",
+          "default" : "20/11/2016"
+        },
+        "valorSaldoFaturaContaCartao" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do saldo da fatura do cartão",
+          "default" : 3698.78
+        },
+        "valorSaldoAnteriorFatura" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do saldo anterior da fatura",
+          "default" : 2610.57
+        },
+        "valorSaldoDolarFatura" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do saldo em dólares da fatura",
+          "default" : 0.0
+        },
+        "valorPagamentoMinimoFatura" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor de pagamento mínimo da fatura",
+          "default" : 151.52
+        },
+        "valorPagamentoFatura" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor de pagamento da fatura",
+          "default" : 658.55
+        },
+        "indicadorDebitoContaCorrente" : {
+          "type" : "string",
+          "description" : "Indicador de débito em conta",
+          "default" : "\"S\""
+        },
+        "dataProximoCiclo" : {
+          "type" : "string",
+          "description" : "Data do próximo ciclo",
+          "default" : "\"29.08.2017\""
+        },
+        "valorJamAtraso" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor jam atraso",
+          "default" : 16.28
+        },
+        "valorMultaAtraso" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da multa de atraso",
+          "default" : 2.25
+        },
+        "valorTaxaRoteadorSaqueMes" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da taxa roteador de saque do mês",
+          "default" : 4.49
+        },
+        "valorTaxaRoteadorSaqueAno" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da taxa roteador de saque do ano",
+          "default" : 5.58
+        },
+        "valorIofAdicionalRoteadorSaque" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do IOF adicional roteador de saque",
+          "default" : 0.0082
+        },
+        "valorIofDiaRoteadorSaque" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do IOF roteador de saque",
+          "default" : 0.0082
+        },
+        "valorCustoEfetivoTotalRoteadorSaqueAno" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do custo efetivo total roteador de saque do ano",
+          "default" : 5.5
+        },
+        "valorTaxaParcelamentoMes" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da taxa de parcelamento do mês",
+          "default" : 2.45
+        },
+        "valorTaxaParcelamentoAno" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da taxa de parcelamento do ano",
+          "default" : 339.5
+        },
+        "valorIofAdicionalParcelamento" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do IOF adicional de parcelamento",
+          "default" : 8.5
+        },
+        "valorIofDiaParcelamento" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do IOF de parcelamento do dia",
+          "default" : 0.5
+        },
+        "valorTaxaPagamentoContaMes" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da taxa de pagamento da conta do mês",
+          "default" : 49.5
+        },
+        "valorTaxaPagamentoContaAno" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da taxa de pagamento da conta do ano",
+          "default" : 69.39
+        },
+        "valorIofAdicionalPagamentoConta" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do IOF adicional de pagamento da conta",
+          "default" : 69.39
+        },
+        "valorIofDiaPagamentoConta" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do IOF do dia de pagamento da conta",
+          "default" : 4.49
+        },
+        "valorCustoEfetivoTotalPagamentoContaAno" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do custo efetivo total do pagamento da conta do ano",
+          "default" : 58.69
+        },
+        "quantidadeTransacao" : {
+          "type" : "integer",
+          "description" : "Quantidade de transações",
+          "default" : 5
+        },
+        "listaLancamentos" : {
+          "type" : "array",
+          "description" : "Transações de cartão de crédito",
+          "items" : {
+            "$ref" : "#/definitions/creditCardBillTransaction"
+          }
+        }
+      },
+      "description" : "Credit card transactions"
+    },
+    "creditCardBillTransaction" : {
+      "type" : "object",
+      "properties" : {
+        "numeroPlastico" : {
+          "type" : "string",
+          "description" : "Número do plastico",
+          "default" : "1234********5678"
+        },
+        "numeroSequencialTitularidadePortador" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Número do portador",
+          "default" : 1
+        },
+        "numeroSequencialMovimentoContaCartao" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Número do movimento da conta cartão",
+          "default" : 497426091
+        },
+        "textoMovimentoContaCartao" : {
+          "type" : "string",
+          "description" : "Texto do movimento",
+          "default" : "RESTAURANTE PF BRASILIA BR"
+        },
+        "dataMovimentoContaCartao" : {
+          "type" : "string",
+          "description" : "Data do movimento",
+          "default" : "22.06.2016"
+        },
+        "valorMovimentoContaCartao" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor do movimento",
+          "default" : 27.52
+        },
+        "valorMoedaExteriorMovimentoContaCartao" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da moeda exterior do movimento",
+          "default" : 0.0
+        },
+        "valorMoedaOriginalMovimento" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Valor da moeda original de movimento",
+          "default" : 111.51
+        },
+        "codigoFormaTransacao" : {
+          "type" : "string",
+          "description" : "Forma da transação",
+          "default" : "\"\""
+        },
+        "codigoModuloProcessador" : {
+          "type" : "string",
+          "description" : "Código do modulo processador",
+          "default" : "VT88888888888888888888"
+        },
+        "codigoAprovacaoTransacao" : {
+          "type" : "string",
+          "description" : "Código da aprovação da transação",
+          "default" : "654321"
+        },
+        "codigoTipoTransacao" : {
+          "type" : "integer",
+          "description" : "Código do tipo de transação",
+          "default" : 62108
+        },
+        "codigoRamoAtividade" : {
+          "type" : "string",
+          "description" : "Código do ramo de atividade",
+          "default" : "1111"
+        },
+        "codigoCategoriaDespesa" : {
+          "type" : "integer",
+          "description" : "Código da categoria da despesa",
+          "default" : 12
+        },
+        "quantidadeParcelaMovimentoCompra" : {
+          "type" : "integer",
+          "description" : "Quantidade da parcela do movimento",
+          "default" : 1
+        },
+        "textoMoedaOriginalMovimento" : {
+          "type" : "string",
+          "description" : "Texto da moeda original do movimento",
+          "default" : "NAO ESPEC.:0111"
+        },
+        "indicadorFuncaoCredito" : {
+          "type" : "string",
+          "description" : "Indicador de função crédito",
+          "default" : "\"S\""
+        },
+        "horaTransacao" : {
+          "type" : "string",
+          "description" : "Hora da transação",
+          "default" : "14:52"
+        },
+        "quantidadePontoTransacao" : {
+          "type" : "integer",
+          "description" : "Quantidade de pontos",
+          "default" : 0
+        }
+      },
+      "description" : "Credit card transactions"
+    },
+    "investmentFundResponse" : {
+      "type" : "object",
+      "properties" : {
+        "investmentFund" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/investmentFund"
+          }
+        }
+      },
+      "description" : "Returns investment fund name and balances."
+    },
+    "investmentFund" : {
+      "type" : "object",
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Investment fund name",
+          "default" : "BB RF Ref DI LP Mega"
+        },
+        "grossBalance" : {
+          "type" : "string",
+          "description" : "The total amount of money before deductions.",
+          "default" : "170,85"
+        },
+        "netBalance" : {
+          "type" : "string",
+          "description" : "The total amount of money after deductions.",
+          "default" : "21.485,36"
+        },
+        "shareBalance" : {
+          "type" : "string",
+          "description" : "Distributions of shares (Quotas)",
+          "default" : "8,263293457"
+        },
+        "dischargeBalance" : {
+          "type" : "string",
+          "description" : "Discharge balance",
+          "default" : "21.485,36"
+        }
+      }
+    },
+    "investmentCDBResponse" : {
+      "type" : "object",
+      "properties" : {
+        "investmentCDB" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/investmentCDB"
+          }
+        }
+      },
+      "description" : "Returns cdb investment  name and balances."
+    },
+    "investmentCDB" : {
+      "type" : "object",
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "CDB investment name",
+          "default" : "BB CDB DI"
+        },
+        "balance" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "The total amount of money",
+          "default" : 21485.36
+        }
+      }
+    },
+    "privatePensionResponse" : {
+      "type" : "object",
+      "properties" : {
+        "privatePension" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/privatePension"
+          }
+        }
+      },
+      "description" : "Returns private pension name and balances."
+    },
+    "privatePension" : {
+      "type" : "object",
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Private pension name",
+          "default" : "BRPREV RT COMP49 D"
+        },
+        "grossBalance" : {
+          "type" : "string",
+          "description" : "The total amount of money before deductions.",
+          "default" : "18532.17"
+        },
+        "shareBalance" : {
+          "type" : "string",
+          "description" : "Distributions of shares (Quotas)",
+          "default" : "9002,671314"
+        },
+        "dischargeNetBalance" : {
+          "type" : "integer",
+          "description" : "Discharge balance",
+          "default" : 0
+        }
+      }
+    },
+    "error" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Integer that specifies the error code.",
+          "default" : 300
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Integer that specifies the error number.",
+          "default" : 598
+        },
+        "message" : {
+          "type" : "string",
+          "description" : "String that specifies the message of the error. Sets the description and message properties of the Error object.",
+          "default" : "Invalid value or parameter. Try again."
+        },
+        "dateTime" : {
+          "type" : "string",
+          "description" : "Date (dd/MM/yyyy HH:mm:ss) when the error was trhown.",
+          "default" : "19/08/2016 11:55:40"
+        }
+      },
+      "description" : "Error Object"
+    }
+  }
+}
