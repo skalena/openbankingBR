@@ -9,7 +9,7 @@
       "name": "https://gitter.im/openMF/mifos"
     }
   },
-  "host": "https://localhost:8443",
+  "host": "localhost:8443",
   "basePath": "/fineract-provider/api/v1",
   "tags": [
     {
