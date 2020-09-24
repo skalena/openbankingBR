@@ -1,0 +1,1005 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Credit Cards API allows you to retrieve your cards, query statements and bills, request detailed information, request a new card and query the replacement value, delivery status, and create a virtual card.",
+    "version" : "1.0.0",
+    "title" : "Credit Cards",
+    "contact" : {
+      "url" : "https://developers.bb.com.br/docs"
+    }
+  },
+  "host" : "api.desenv.bb.com.br",
+  "basePath" : "/cards/v1",
+  "schemes" : [ "https" ],
+  "security" : [ {
+    "oauth2" : [ "cards.creditcard-info", "cards.creditcard-manage", "cards.creditcard-request", "cards.creditcard-statement" ]
+  } ],
+  "paths" : {
+    "/credit-cards" : {
+      "get" : {
+        "tags" : [ "List Credit Cards " ],
+        "summary" : "List Credit Cards",
+        "description" : "Returns holder's credit cards, including information such as card brand, card number, unlock status and illustrative card image code.",
+        "produces" : [ "application/json" ],
+        "parameters" : [
+			{
+				"name": "gw-app-key",
+				"in": "query",
+				"required": true,
+				"type": "string",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			}
+		],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has succeeded.",
+            "schema" : {
+              "$ref" : "#/definitions/cardListResponse"
+            },
+            "examples" : {
+              "application/json" : "[\n{\n\"name\": \"OUROCARD VISA\", \n\"extendedName\": \"OUROCARD ESTILO VISA GOLD\",\n\"number\": 1234567891234567, \n\"unlockedByHolder\": false,\n\"imgId\": 1,\n\"imgExtendedId\": 192\n }, \n{ \n\"name\": \"OUROCARD MASTERCARD\", \n\"extendedName\": \"OUROCARD ESTILO MASTERCARD GOLD\",\n\"number\": 9876543219876543, \n\"unlockedByHolder\": true,\n\"imgId\": 1,\n\"imgExtendedId\": 192\n} \n]"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot or will not process the request due to something that is perceived to be a client error.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"400\",\n\"description\": \"bad request\",\n\"message\": \"The server cannot or will not process the request due to something that is perceived to be a client error\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "502" : {
+            "description" : "BAD GATEWAY. The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"502\",\n\"description\": \"bad gateway\",\n\"message\": \"The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          }
+        },
+		"security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    },
+    "/credit-cards/{id}" : {
+      "get" : {
+        "tags" : [ "Credit Card Detail" ],
+        "summary" : "Credit Card Detail",
+        "description" : "Detailed information for the physical credit card\n",
+        "produces" : [ "application/json" ],
+        "parameters" : [
+			{
+				"name": "gw-app-key",
+				"in": "query",
+				"required": true,
+				"type": "string",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			},
+			{
+			"name" : "id",
+			"in" : "path",
+			"required" : true,
+			"type" : "string",
+			"description" : "Credit Card number."
+			}
+		],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has succeeded.",
+            "schema" : {
+              "$ref" : "#/definitions/cardInfoResponse"
+            },
+            "examples" : {
+              "application/json" : "[\n{\n\"allowVirtualCard\": true,\n\"name\": \"OUROCARD VISA GOLD\",\n\"extendedName\": \"OUROCARD ESTILO VISA GOLD\",\n\"type\": \"VISA\",\n\"returnReceipt\": \"PG999999999BR\",\n\"prePaid\": false,\n\"internationalUnlocked\": true,\n\"internationalUnlockedStartDate\": \"20/08/2017\",\n\"internationalUnlockedEndDate\": \"20/09/2017\",\n\"definitiveCardBlock\": false,\n\"creditLimit\": 9876.54,\n\"billingStatementByMail\": false,\n\"temporaryBlock\": false,\n\"blocked\": false,\n\"maxTransactionAmount\": 1000.00,\n\"usedLimit\": 2000.00,\n\"onlinePaymentLocked\": true,\n\"pointsBalance\": 200,\n\"unlockedByHolder\": true,\n\"customName\": \"BRUNO P SIQUEIRA\",\n\"dueDay\": 5,\n\"imgId\": 1,\n\"imgExtendedId\": 192\n}\n]"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot or will not process the request due to something that is perceived to be a client error.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"400\",\n\"description\": \"bad request\",\n\"message\": \"The server cannot or will not process the request due to something that is perceived to be a client error\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "502" : {
+            "description" : "BAD GATEWAY. The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"502\",\n\"description\": \"bad gateway\",\n\"message\": \"The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          }
+        },
+		"security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      },
+      "patch" : {
+        "tags" : [ "Unlock Card" ],
+        "summary" : "Unlock Card",
+        "description" : "Unlock your brand new card.\n",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [
+			{
+				"name": "gw-app-key",
+				"in": "query",
+				"required": true,
+				"type": "string",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			},
+			{
+				"name" : "body",
+				"in" : "body",
+				"required" : true,
+				"schema" : {
+					"$ref" : "#/definitions/unlockRequest"
+				},
+				"x-examples" : {
+					"application/json" : "{\n\"unlockedByHolder\": true,\n\"cvv\": \"123\"\n}"
+				}
+			}
+		],
+        "responses" : {
+          "204" : {
+            "description" : "NO CONTENT. The server has successfully fulfilled the request and that there is no additional content to send in the response payload body."
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot or will not process the request due to something that is perceived to be a client error.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"400\",\n\"description\": \"bad request\",\n\"message\": \"The server cannot or will not process the request due to something that is perceived to be a client error\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "403" : {
+            "description" : "The server understood the request but refuses to authorize it.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"403\",\n\"description\": \"forbidden\",\n\"message\": \"The server understood the request but refuses to authorize it\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND. The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"404\",\n\"description\": \"not found\",\n\"message\": \"The origin server did not find a current representation for the target resource\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "409" : {
+            "description" : "CONFLICT. The request could not be completed due to a conflict with the current state of the target resource.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"409\",\n\"description\": \"conflict\",\n\"message\": \"Resolve the conflict and resubmit the request\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "502" : {
+            "description" : "BAD GATEWAY. The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"502\",\n\"description\": \"bad gateway\",\n\"message\": \"The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          }
+        },
+		"security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+      }
+    },
+    "/credit-cards/{id}/replacements" : {
+      "post" : {
+        "tags" : [ "Replacement a Credit Card" ],
+        "summary" : "Replacement a Credit Card",
+        "description" : "Replaces a credit card that has been stolen, lost or broken. This replacement has a cost for the Holder.",
+        "produces" : [ "application/json" ],
+        "parameters" : [
+			{
+				"name": "gw-app-key",
+				"in": "query",
+				"required": true,
+				"type": "string",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			},
+			{
+			"name" : "id",
+			"in" : "path",
+			"required" : true,
+			"type" : "string",
+			"description" : "Credit Card number."
+			}
+		],
+        "responses" : {
+          "204" : {
+            "description" : "NO CONTENT. The server has successfully fulfilled the request and that there is no additional content to send in the response payload body."
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot or will not process the request due to something that is perceived to be a client error.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"400\",\n\"description\": \"bad request\",\n\"message\": \"The server cannot or will not process the request due to something that is perceived to be a client error\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "403" : {
+            "description" : "FORBIDDEN. The server understood the request but refuses to authorize it.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"403\",\n\"description\": \"forbidden\",\n\"message\": \"The server understood the request but refuses to authorize it\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND. The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"404\",\n\"description\": \"not found\",\n\"message\": \"The origin server did not find a current representation for the target resource\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "502" : {
+            "description" : "BAD GATEWAY. The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"502\",\n\"description\": \"bad gateway\",\n\"message\": \"The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          }
+        }
+      },
+		"security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+    },
+    "/credit-cards/{id}/replacements/values" : {
+      "get" : {
+        "tags" : [ "Replacement Value" ],
+        "summary" : "Replacement Value",
+        "description" : "Request the replacement value of a credit card.",
+        "produces" : [ "application/json" ],
+        "parameters" : [
+			{
+				"name": "gw-app-key",
+				"in": "query",
+				"required": true,
+				"type": "string",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			},
+			{
+			"name" : "id",
+			"in" : "path",
+			"required" : true,
+			"type" : "string",
+			"description" : "Credit Card number."
+			}
+		],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has succeeded.",
+            "schema" : {
+              "$ref" : "#/definitions/replacementValueResponse"
+            },
+            "examples" : {
+              "application/json" : "{\n\"description\": \"Segunda via\",\n\"value\": 10.00\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot or will not process the request due to something that is perceived to be a client error.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"400\",\n\"description\": \"bad request\",\n\"message\": \"The server cannot or will not process the request due to something that is perceived to be a client error\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND. The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"404\",\n\"description\": \"not found\",\n\"message\": \"The origin server did not find a current representation for the target resource\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          }
+        }
+      },
+		"security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+    },
+    "/credit-cards/{id}/virtual" : {
+      "post" : {
+        "tags" : [ "Create Virtual Card" ],
+        "summary" : "Create Virtual Card",
+        "description" : "Creates a new virtual card. The virtual card created is associated with one physical credit card passed as path parameter.",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [
+			{
+				"name": "gw-app-key",
+				"in": "query",
+				"required": true,
+				"type": "string",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			},
+			{
+				"name" : "id",
+				"in" : "path",
+				"required" : true,
+				"type" : "string",
+				"description" : "Credit Card number."
+			},
+			{
+			  "name" : "body",
+			  "in" : "body",
+			  "required" : true,
+			  "schema" : {
+				"$ref" : "#/definitions/virtualCardsRequest"
+			  },
+			  "x-examples" : {
+				"application/json" : "{\n \"name\": \"XYZ Company\",\n \"expirationDate\": \"31/12/2018\",\n \"internationalUnlocked\": true,\n \"creditLimit\": 1000.15,\n \"authorizedTransactionsNumber\": 1,\n \"maxTransactionAmount\": 600.00,\n \"billingCycle\": \"Monthly\",\n \"dueDate\": 25\n}"
+			  }
+			}
+		],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has succeeded.",
+            "schema" : {
+              "$ref" : "#/definitions/virtualCardsResponse"
+            },
+            "examples" : {
+              "application/json" : "{\n\"id\": 4984123456789123,\n\"name\": \"OUROCARD VISA\",\n\"cvv\": \"123\",\n\"expirationDate\": \"29/08/2017\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot or will not process the request due to something that is perceived to be a client error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"400\",\n\"description\": \"bad request\",\n\"message\": \"The server cannot or will not process the request due to something that is perceived to be a client error\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "403" : {
+            "description" : "FORBIDDEN. The server understood the request but refuses to authorize it.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"403\",\n\"description\": \"forbidden\",\n\"message\": \"The server understood the request but refuses to authorize it\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND. The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"404\",\n\"description\": \"not found\",\n\"message\": \"The origin server did not find a current representation for the target resource\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "502" : {
+            "description" : "BAD GATEWAY. The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"502\",\n\"description\": \"bad gateway\",\n\"message\": \"The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          }
+        }
+      },
+		"security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+    },
+    "/trackings/{card_number}" : {
+      "get" : {
+        "tags" : [ "Tracking Delivery Status" ],
+        "summary" : "Tracking Delivery Status",
+        "description" : "Tracking delivery status of card",
+        "produces" : [ "application/json" ],
+        "parameters" : [
+			{
+				"name": "gw-app-key",
+				"in": "query",
+				"required": true,
+				"type": "string",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			},
+			{
+			"name" : "card_number",
+			"in" : "path",
+			"required" : true,
+			"type" : "string",
+			"description" : "Credit Card number."
+			}
+		],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has succeeded.",
+            "schema" : {
+              "$ref" : "#/definitions/trackingResponse"
+            },
+            "examples" : {
+              "application/json" : "{\n \"delivered\": true,\n  \"trackingNumber\": \"PB10203040BR\",\n  \"description\": \"Recebido\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot or will not process the request due to something that is perceived to be a client error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"400\",\n\"description\": \"bad request\",\n\"message\": \"The server cannot or will not process the request due to something that is perceived to be a client error\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND. The origin server did not find a current representation for the target resource or is not willing to disclose that one exists.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"404\",\n\"description\": \"not found\",\n\"message\": \"The origin server did not find a current representation for the target resource\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          },
+          "502" : {
+            "description" : "BAD GATEWAY. The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            },
+            "examples" : {
+              "application/json" : "{\n\"error\": \"502\",\n\"description\": \"bad gateway\",\n\"message\": \"The server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request\"\n}"
+            },
+            "headers" : {
+              "Content-Type" : {
+                "type" : "string",
+                "description" : "Used to indicate the media type of the resource",
+                "x-example" : "application/json"
+              }
+            }
+          }
+        }
+      },
+		"security" : [ {
+          "oauth2" : [ "consultas-financeiras.extratos" ]
+        } ]
+    }
+  },
+  "securityDefinitions" : {
+    "oauth2" : {
+      "type" : "oauth2",
+      "authorizationUrl" : "oauth.html",
+      "flow" : "implicit",
+      "scopes" : {
+        "cards.creditcard-info" : "Basic Credit Card Information.",
+        "cards.creditcard-manage" : "Lock, unlock, and cancel credit card.",
+        "cards.creditcard-request" : "Request new credit card.",
+        "cards.creditcard-statement" : "Bills and credit card bill details."
+      }
+    }
+  },
+  "definitions" : {
+    "cardInfoResponse" : {
+      "type" : "object",
+      "properties" : {
+        "allowVirtualCard" : {
+          "type" : "boolean",
+          "description" : "Allows creation of virtual cards",
+          "example" : true
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "Type name",
+          "example" : "OUROCARD VISA GOLD"
+        },
+        "extendedName" : {
+          "type" : "string",
+          "description" : "Type name extended",
+          "example" : "OUROCARD ESTILO VISA GOLD"
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "Brand",
+          "example" : "VISA"
+        },
+        "returnReceipt" : {
+          "type" : "string",
+          "description" : "Delivery tracking number",
+          "example" : "PG999999999BR"
+        },
+        "prePaid" : {
+          "type" : "boolean",
+          "description" : "Card is prepaid",
+          "example" : false
+        },
+        "internationalUnlocked" : {
+          "type" : "boolean",
+          "description" : "Card is unlocked for international payments",
+          "example" : true
+        },
+        "internationalUnlockedStartDate" : {
+          "type" : "string",
+          "description" : "Unlock start date for international payments",
+          "example" : "20/01/2017"
+        },
+        "internationalUnlockedEndDate" : {
+          "type" : "string",
+          "description" : "Unlock end date for international payments",
+          "example" : "20/09/2017"
+        },
+        "definitiveCardBlock" : {
+          "type" : "boolean",
+          "description" : "Definitely blocked",
+          "example" : false
+        },
+        "creditLimit" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Credit limit",
+          "example" : 9876.54
+        },
+        "billingStatementByMail" : {
+          "type" : "boolean",
+          "description" : "Billing statement is send to client's address",
+          "example" : false
+        },
+        "temporaryBlock" : {
+          "type" : "boolean",
+          "description" : "Has a temporary block",
+          "example" : false
+        },
+        "blocked" : {
+          "type" : "boolean",
+          "description" : "Has a block",
+          "example" : false
+        },
+        "maxTransactionAmount" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Maximum transaction amount",
+          "example" : 2000
+        },
+        "usedLimit" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Used credit limit",
+          "example" : 1000
+        },
+        "onlinePaymentLocked" : {
+          "type" : "boolean",
+          "description" : "Allows online payments",
+          "example" : true
+        },
+        "pointsBalance" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Points balance",
+          "example" : 2000
+        },
+        "unlockedByHolder" : {
+          "type" : "boolean",
+          "description" : "Customer Unlocking",
+          "example" : true
+        },
+        "customName" : {
+          "type" : "string",
+          "description" : "Custom card name",
+          "example" : "BRUNO P SIQUEIRA"
+        },
+        "dueDay" : {
+          "type" : "integer",
+          "format" : "int8",
+          "description" : "Day of due date",
+          "example" : 1
+        },
+        "imgId" : {
+          "type" : "integer",
+          "format" : "int16",
+          "description" : "Card image id",
+          "example" : 1
+        },
+        "imgExtendedId" : {
+          "type" : "integer",
+          "format" : "int16",
+          "description" : "Card image extended id",
+          "example" : 123
+        }
+      },
+      "description" : "Credit Card Informations Response Object"
+    },
+    "Error" : {
+      "type" : "object",
+      "required" : [ "description", "error", "message" ],
+      "properties" : {
+        "error" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "message" : {
+          "type" : "string"
+        }
+      },
+      "description" : "General Error Object"
+    },
+    "unlockRequest" : {
+      "type" : "object",
+      "required" : [ "cvv", "unlockedByHolder" ],
+      "properties" : {
+        "unlockedByHolder" : {
+          "type" : "boolean",
+          "description" : "Holder authorizes the unlock of your credit card",
+          "example" : true
+        },
+        "cvv" : {
+          "type" : "string",
+          "description" : "Card Verification Value",
+          "example" : "123"
+        }
+      },
+      "description" : "Unlock Credit Card Request Object"
+    },
+    "cardListResponse" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Type name",
+          "example" : "OUROCARD VISA GOLD"
+        },
+        "extendedName" : {
+          "type" : "string",
+          "description" : "Type name extended",
+          "example" : "OUROCARD ESTILO VISA GOLD"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Card number",
+          "example" : 1234567891234567
+        },
+        "unlockedByHolder" : {
+          "type" : "boolean",
+          "description" : "Customer unlocking",
+          "example" : true
+        },
+        "imgId" : {
+          "type" : "integer",
+          "format" : "int16",
+          "description" : "Card image id",
+          "example" : 1
+        },
+        "imgExtendedId" : {
+          "type" : "integer",
+          "format" : "int16",
+          "description" : "Card image extended id",
+          "example" : 123
+        }
+      },
+      "description" : "Credit Card List Response Object"
+    },
+    "replacementValueResponse" : {
+      "type" : "object",
+      "properties" : {
+        "description" : {
+          "type" : "string",
+          "description" : "Description of the request for a replacement card",
+          "example" : "Segunda via"
+        },
+        "value" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "The cost of issuing a replacement credit card",
+          "example" : 10
+        }
+      },
+      "description" : "Replacement Value Response Object"
+    },
+    "virtualCardsRequest" : {
+      "type" : "object",
+      "required" : [ "authorizedTransactionsNumber", "billingCycle", "creditLimit", "dueDate", "expirationDate", "internationalUnlocked", "maxTransactionAmount", "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "Custom name that the card receives and uses as a description.",
+          "example" : "\"tickets to europe\""
+        },
+        "expirationDate" : {
+          "type" : "string",
+          "description" : "Represents the expiration date of the virtual card. FORMAT: DD/MM/YYYY",
+          "example" : "31/12/2018"
+        },
+        "internationalUnlocked" : {
+          "type" : "boolean",
+          "description" : "Allow international transactions",
+          "example" : true
+        },
+        "creditLimit" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Maximum amount of virtual card transactions",
+          "example" : 1000.15
+        },
+        "authorizedTransactionsNumber" : {
+          "type" : "integer",
+          "format" : "int16",
+          "description" : "Maximum quantity of virtual card transactions",
+          "example" : 10
+        },
+        "maxTransactionAmount" : {
+          "type" : "number",
+          "format" : "double",
+          "description" : "Maximum amount per transaction of the virtual card",
+          "default" : 600.99
+        },
+        "billingCycle" : {
+          "type" : "string",
+          "description" : "Frequency in which the limit of the virtual card must be renewed.",
+          "default" : "Monthly",
+          "example" : "Monthly,\nWeekly,\nDaily"
+        },
+        "dueDate" : {
+          "type" : "integer",
+          "format" : "int8",
+          "description" : "Due date of the bill",
+          "example" : 25
+        }
+      }
+    },
+    "virtualCardsResponse" : {
+      "type" : "object",
+      "required" : [ "cvv", "expirationDate", "name" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Virtual Card Number",
+          "example" : 1234567891234567
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "Custom name that the card receives and uses as a description.",
+          "example" : "\"tickets to europe\""
+        },
+        "expirationDate" : {
+          "type" : "string",
+          "description" : "Represents the expiration date of the virtual card. FORMAT: DD/MM/YYYY",
+          "example" : "31/12/2018"
+        },
+        "cvv" : {
+          "type" : "string",
+          "description" : "Card Verification Value",
+          "example" : "123"
+        }
+      }
+    },
+    "trackingResponse" : {
+      "type" : "object",
+      "properties" : {
+        "delivered" : {
+          "type" : "boolean",
+          "description" : "If the card has been delivered or not",
+          "example" : true
+        },
+        "trackingNumber" : {
+          "type" : "string",
+          "description" : "Delivery tracking number",
+          "example" : "PG999999999BR"
+        },
+        "description" : {
+          "type" : "string",
+          "description" : "Status about the delivery of the new card",
+          "example" : "Remetido"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,409 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "BB Payments API helps you process payments for purchases made by users on your application.",
+    "version" : "0.0.1",
+    "title" : "Payments API",
+    "contact" : { }
+  },
+  "host" : "api.desenv.bb.com.br",
+  "basePath" : "/payments/v1",
+  "tags" : [ {
+    "name" : "Payment"
+  } ],
+  "schemes" : [ "https" ],
+  "security": [
+                    {
+                        "oauth2": [
+                            "comercio-eletronico.pagamentos"
+                        ]
+                    }
+                ],
+  "paths" : {
+    "/ecommerce" : {
+      "post" : {
+        "tags" : [ "Payment" ],
+        "summary" : "Request",
+        "description" : "Provide a payment object that includes an intent, payer, and transactions.",
+		"security": [
+                    {
+                        "oauth2": [
+                            "comercio-eletronico.pagamentos"
+                        ]
+                    }
+                ],
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [
+				{
+				"name": "gw-app-key",
+				"in": "query",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"required": true,
+				"type": "string",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			  },
+			{
+				"in" : "body",
+				"name" : "body",
+				"required" : true,
+				"schema" : {
+				"$ref" : "#/definitions/paymentRequest"
+				}
+			} ],
+        "responses" : {
+          "201" : {
+            "description" : "CREATED. The request has been fulfilled and resulted in a new resource being created.",
+            "schema" : {
+              "$ref" : "#/definitions/paymentResponse"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "UNAUTHORIZED. The request requires user authentication. Repeat the request with a Authorization header field."
+          },
+          "404" : {
+            "description" : "NOT FOUND. The server has not found anything matching the Request-URI.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "409" : {
+            "description" : "CONFLICT. The request could not be completed due to a conflict with the current state of the target resource. UID duplicated.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "422" : {
+            "description" : "REQUEST FAILED. The parameters were valid but the request failed.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE. The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "504" : {
+            "description" : "GATEWAY TIMEOUT. The server did not receive a timely response from the upstream server needed to access in attempting to complete the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/ecommerce/{id}" : {
+      "get" : {
+        "tags" : [ "Payment" ],
+        "summary" : "Retrieve",
+        "description" : "Retrieves the details of a payment.",
+		"security": [
+                    {
+                        "oauth2": [
+                            "comercio-eletronico.pagamentos"
+                        ]
+                    }
+                ],
+        "produces" : [ "application/json" ],
+        "parameters" : [
+				{
+				"name": "gw-app-key",
+				"in": "query",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"required": true,
+				"type": "string",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			  },
+			{
+			  "name" : "id",
+			  "in" : "path",
+			  "description" : "Unique identification, to unambiguously identify the payment information group within the message that will be checked.",
+			  "required" : true,
+			  "type" : "string"
+			} ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The request has been fulfilled and resulted in   response.",
+            "schema" : {
+              "$ref" : "#/definitions/paymentRetrieve"
+            }
+          },
+          "400" : {
+            "description" : "BAD REQUEST. The server cannot process the request due to malformed request syntax, invalid request message framing, or invalid values.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "401" : {
+            "description" : "UNAUTHORIZED. The request requires user authentication. Repeat the request with a Authorization header field."
+          },
+          "404" : {
+            "description" : "NOT FOUND. The server has not found anything matching the Request-URI."
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE. The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "504" : {
+            "description" : "GATEWAY TIMEOUT. The server did not receive a timely response from the upstream server needed to access in attempting to complete the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/ecommerce/{id}/reversal" : {
+      "post" : {
+        "tags" : [ "Payment" ],
+        "summary" : "Reverse",
+        "description" : "Reverse a charge that has previously been created.",
+		"security": [
+                    {
+                        "oauth2": [
+                            "comercio-eletronico.pagamentos"
+                        ]
+                    }
+                ],
+        "produces" : [ "application/json" ],
+        "parameters" : [
+				{
+				"name": "gw-app-key",
+				"in": "query",
+				"description": "QUERY PARAM. The developer app access key. This key is going to be used to identify requests per developer application on Developer Portal.",
+				"required": true,
+				"type": "string",
+				"x-example": "40efa840a8a801364253005056b91a5b"
+			  },
+			{
+			  "name" : "id",
+			  "in" : "path",
+			  "description" : "Unique identification, to unambiguously identify the payment information group within the message that will be checked.",
+			  "required" : true,
+			  "type" : "string"
+			} ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS. The payment resource identified by id has been reversed.",
+            "schema" : {
+              "$ref" : "#/definitions/paymentResponse"
+            }
+          },
+          "401" : {
+            "description" : "UNAUTHORIZED. The request requires user authentication. Repeat the request with a Authorization header field."
+          },
+          "403" : {
+            "description" : "REQUEST FAILED. The parameters were valid but the request failed.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "404" : {
+            "description" : "NOT FOUND. The server has not found anything matching the Request-URI."
+          },
+          "500" : {
+            "description" : "INTERNAL ERROR. The server encountered an unexpected condition which prevented it from fulfilling the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "503" : {
+            "description" : "SERVICE UNAVAILABLE. The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          },
+          "504" : {
+            "description" : "GATEWAY TIMEOUT. The server did not receive a timely response from the upstream server needed to access in attempting to complete the request.",
+            "schema" : {
+              "$ref" : "#/definitions/error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "oauth2" : {
+      "type" : "oauth2",
+      "authorizationUrl" : "oauth.html",
+      "flow" : "implicit",
+      "scopes" : {
+        "comercio-eletronico.pagamentos" : "Provide maintenance on payments flow."
+      }
+    }
+  },
+  "definitions" : {
+    "paymentRequest" : {
+      "type" : "object",
+      "required" : [ "instructedAmount", "paymentInformationId" ],
+      "properties" : {
+        "paymentInformationId" : {
+          "type" : "integer",
+          "format" : "int64",
+		  "default": 2,
+          "description" : "Unique identification, as assigned by a sending party, to unambiguously identify the payment information group within the message. Cannot exceed 12 digits."
+        },
+        "instructedAmount" : {
+          "description" : "Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.",
+          "$ref" : "#/definitions/instructedAmount"
+        },
+        "language" : {
+          "type" : "string",
+		  "default": "PT-BR",
+          "description" : "Identification of the language name according to the IETF language code, enum: [PT-BR, EN-US]."
+        }
+      },
+      "description" : "Payment Object Request"
+    },
+    "instructedAmount" : {
+      "type" : "object",
+      "required" : [ "amount", "currency" ],
+      "properties" : {
+        "currency" : {
+          "type" : "string",
+		  "default": "BRL",
+          "description" : "Currency in which the rate of exchange is expressed in a currency exchange. This API currently accepts payments only in brazilian real (BRL)"
+        },
+        "amount" : {
+          "type" : "number",
+          "format" : "double",
+		  "default": 20,
+          "description" : "Amount of money (decimal) to be moved between debtor and creditor, before deduction of charges, expressed in the currency of the debtor's account, and to be moved in a different currency"
+        }
+      },
+      "description" : "Instructed Amount Object"
+    },
+    "debitAuthorization" : {
+      "type" : "object",
+      "properties" : {
+        "number" : {
+          "type" : "integer",
+		  "default": 1,
+          "format" : "int32",
+          "description" : "Unique identification to unambiguously identify the payment information of transaction."
+        }
+      },
+      "description" : "Debit Authorization"
+    },
+    "paymentResponse" : {
+      "type" : "object",
+      "properties" : {
+        "debitAuthorization" : {
+          "description" : "Object to check whether the initiating party is allowed to initiate transactions from the account specified in the message.",
+          "$ref" : "#/definitions/debitAuthorization"
+        },
+        "acceptanceDate" : {
+          "type" : "string",
+		  "default": "24012017",
+          "description" : "Date (ddMMyyyy) when the payment order from the initiating party meets the processing conditions of the account servicing agent. This means that the account servicing agent has received the payment order and has applied checks such as authorization, availability of funds."
+        },
+        "dateToDebit" : {
+          "type" : "string",
+		  "default": "24012017",
+          "description" : "Date (ddMMyyyy) for debiting the amount."
+        },
+        "dateToCreditParty" : {
+          "type" : "string",
+		  "default": "26012017",
+          "description" : "Date (ddMMyyyy) for crediting the amount to the party."
+        },
+        "messageDescription" : {
+          "type" : "string",
+		  "default": "TRANSACAO AUTORIZADA",
+          "description" : "Message Description."
+        }
+      },
+      "description" : "Payment Object Response"
+    },
+    "paymentRetrieve" : {
+      "type" : "object",
+      "properties" : {
+        "originalTransactionAuthorization" : {
+          "description" : "Object to check whether the initiating party was allowed to initiate payment or reversals for the payment specified in the message.",
+          "$ref" : "#/definitions/debitAuthorization"
+        },
+        "acceptanceDate" : {
+          "type" : "string",
+		  "default": "24012017",
+          "description" : "Date (ddMMyyyy) when the payment order from the initiating party meets the processing conditions of the account servicing agent. This means that the account servicing agent has received the payment order and has applied checks such as authorization, availability of funds."
+        },
+        "dateToDebit" : {
+          "type" : "string",
+		  "default": "24012017",
+          "description" : "Date (ddMMyyyy) for debiting the amount."
+        },
+        "dateToCreditParty" : {
+          "type" : "string",
+		  "default": "26012017",
+          "description" : "Date (ddMMyyyy) for crediting the amount to the party."
+        },
+        "messageDescription" : {
+          "type" : "string",
+		  "default": "SUCESSO NA EXECUCAO",
+          "description" : "Message Description."
+        },
+        "originalTransactionMessageDescription" : {
+          "type" : "string",
+		  "default": "TRANSACAO AUTORIZADA",
+          "description" : "Message Description of the original transaction."
+        },
+        "instructedAmount" : {
+          "description" : "Amount of money that was moved or reversed between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party.",
+          "$ref" : "#/definitions/instructedAmount"
+        }
+      },
+      "description" : "Payment Retrieve Object Request"
+    },
+    "error" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "integer",
+          "format" : "int32",
+		  "default": 22,
+          "description" : "Integer that specifies the error code."
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32",
+		  "default": 1,
+          "description" : "Integer that specifies the error number."
+        },
+        "message" : {
+          "type" : "string",
+		  "default": "Transação inválida (M022-001)",
+          "description" : "String that specifies the message of the error. Sets the description and message properties of the Error object."
+        },
+        "dateTime" : {
+          "type" : "string",
+		  "default": "24/01/2017 11:56:09",
+          "description" : "Date (dd/MM/yyyy HH:mm:ss) when the error was trhown."
+        }
+      },
+      "description" : "Error Object"
+    }
+  }
+}
